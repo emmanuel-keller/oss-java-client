@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 OpenSearchServer Inc.
+/*
+ * Copyright 2015-2017 OpenSearchServer Inc.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,32 @@
  */
 package com.opensearchserver.client.common;
 
-import com.qwazr.utils.http.ResponseValidator;
-import com.qwazr.utils.json.client.JsonClientAbstract;
+import com.opensearchserver.client.JsonClient1;
 
-public class AbstractApi<T extends JsonClientAbstract> {
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.WebTarget;
 
-	protected final static ResponseValidator validator_200 = ResponseValidator.create().status(200);
-	protected final static ResponseValidator validator_200_201 = ResponseValidator.create().status(200, 201);
-	protected final static ResponseValidator validator_200_404 = ResponseValidator.create().status(200, 404);
+public class AbstractApi<T extends JsonClient1> {
 
-	protected final T client;
+	protected final WebTarget target;
 
 	public AbstractApi(T client) {
-		this.client = client;
+		this.target = client.getTarget();
 	}
 
+	protected boolean expectTrue200false404(int code) {
+		switch (code) {
+		case 200:
+			return true;
+		case 404:
+			return false;
+		default:
+			throw new WebApplicationException(code);
+		}
+	}
+
+	protected void expectTrue200(int code) {
+		if (code != 200)
+			throw new WebApplicationException(code);
+	}
 }

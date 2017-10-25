@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 OpenSearchServer Inc.
+/*
+ * Copyright 2015-2017 OpenSearchServer Inc.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@ package com.opensearchserver.client.v1;
 
 import com.opensearchserver.client.JsonClient1;
 import com.opensearchserver.client.common.AbstractApi;
-import com.qwazr.utils.http.HttpRequest;
-import org.apache.http.client.utils.URIBuilder;
 
+import javax.ws.rs.client.Entity;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -35,14 +34,15 @@ public class DictionaryApi1 extends AbstractApi<JsonClient1> {
 	 * @param indexName    The name of the index
 	 * @param listName     Name of the list
 	 * @param listSynonyms List of synonyms, one set of synonyms by line, raw text
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
-	public void createSynonymsList(String indexName, String listName, String listSynonyms)
-			throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/synonyms/", listName);
-		final HttpRequest request = HttpRequest.Put(uriBuilder.build());
-		client.execute(request, listSynonyms, null, validator_200);
+	public void createSynonymsList(String indexName, String listName, String listSynonyms) {
+		expectTrue200(target.path("index")
+				.path(indexName)
+				.path("synonyms")
+				.path(listName)
+				.request()
+				.put(Entity.json(listSynonyms))
+				.getStatus());
 	}
 
 	/**
@@ -51,13 +51,10 @@ public class DictionaryApi1 extends AbstractApi<JsonClient1> {
 	 * @param indexName The name of the index.
 	 * @param listName  The name of the list.
 	 * @return true if the analyzer exists, false if not.
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
 	public boolean checkSynonymsListExists(String indexName, String listName) throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/synonyms/", listName);
-		final HttpRequest request = HttpRequest.Head(uriBuilder.build());
-		return client.execute200True404False(request, null, null, validator_200_404);
+		return expectTrue200false404(
+				target.path("index").path(indexName).path("synonyms").path(listName).request().head().getStatus());
 	}
 
 	/**
@@ -65,13 +62,10 @@ public class DictionaryApi1 extends AbstractApi<JsonClient1> {
 	 *
 	 * @param indexName The name of the index.
 	 * @param listName  The name of the list.
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
-	public void deleteSynonymsList(String indexName, String listName) throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/synonyms/", listName);
-		final HttpRequest request = HttpRequest.Delete(uriBuilder.build());
-		client.execute(request, null, null, validator_200);
+	public void deleteSynonymsList(String indexName, String listName) {
+		expectTrue200(
+				target.path("index").path(indexName).path("synonyms").path(listName).request().delete().getStatus());
 	}
 
 	/**
@@ -80,14 +74,16 @@ public class DictionaryApi1 extends AbstractApi<JsonClient1> {
 	 * @param indexName     The name of the index
 	 * @param listName      Name of the list
 	 * @param stopwordsList List of synonyms, one set of synonyms by line, raw text
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
 	public void createStopWordsList(String indexName, String listName, String stopwordsList)
 			throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/stopwords/", listName);
-		final HttpRequest request = HttpRequest.Put(uriBuilder.build());
-		client.execute(request, stopwordsList, null, validator_200);
+		expectTrue200(target.path("index")
+				.path(indexName)
+				.path("stopwords")
+				.path(listName)
+				.request()
+				.put(Entity.json(stopwordsList))
+				.getStatus());
 	}
 
 	/**
@@ -96,13 +92,10 @@ public class DictionaryApi1 extends AbstractApi<JsonClient1> {
 	 * @param indexName The name of the index.
 	 * @param listName  The name of the list.
 	 * @return true if the analyzer exists, false if not.
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
 	public boolean checkStopWordsListExists(String indexName, String listName) throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/stopwords/", listName);
-		final HttpRequest request = HttpRequest.Head(uriBuilder.build());
-		return client.execute200True404False(request, null, null, validator_200_404);
+		return expectTrue200false404(
+				target.path("index").path(indexName).path("stopwords").path(listName).request().head().getStatus());
 	}
 
 	/**
@@ -114,8 +107,7 @@ public class DictionaryApi1 extends AbstractApi<JsonClient1> {
 	 * @throws URISyntaxException if the URI is not valid
 	 */
 	public void deleteStopWordsList(String indexName, String listName) throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/stopwords/", listName);
-		final HttpRequest request = HttpRequest.Delete(uriBuilder.build());
-		client.execute(request, null, null, validator_200);
+		expectTrue200(
+				target.path("index").path(indexName).path("stopwords").path(listName).request().delete().getStatus());
 	}
 }

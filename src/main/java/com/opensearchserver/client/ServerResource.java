@@ -1,5 +1,5 @@
-/**
- * Copyright 2014-2015 OpenSearchServer Inc.
+/*
+ * Copyright 2014-2017 OpenSearchServer Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package com.opensearchserver.client;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.xml.bind.annotation.XmlTransient;
 
 @JsonInclude(Include.NON_EMPTY)
 @JsonIgnoreProperties(ignoreUnknown = true)

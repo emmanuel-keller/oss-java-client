@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 OpenSearchServer Inc.
+/*
+ * Copyright 2015-2017 OpenSearchServer Inc.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ import com.opensearchserver.client.JsonClient1;
 import com.opensearchserver.client.common.AbstractApi;
 import com.opensearchserver.client.common.search.query.DocumentsQuery;
 import com.opensearchserver.client.v1.search.DocumentsResult1;
-import com.qwazr.utils.http.HttpRequest;
-import org.apache.http.client.utils.URIBuilder;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -43,11 +43,13 @@ public class DocumentApi1 extends AbstractApi<JsonClient1> {
 	 * @throws IOException        if any I/O error occurs
 	 * @throws URISyntaxException if the URI is not valid
 	 */
-	public DocumentsResult1 documentsSearch(String indexName, DocumentsQuery query)
-			throws IOException, URISyntaxException {
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/documents");
-		final HttpRequest request = HttpRequest.Post(uriBuilder.build());
-		return client.executeJson(request, query, null, DocumentsResult1.class, validator_200);
+	public DocumentsResult1 documentsSearch(String indexName, DocumentsQuery query) {
+		return target.path("index")
+				.path(indexName)
+				.path("documents")
+				.request().accept(MediaType.APPLICATION_JSON)
+				.post(Entity.json(query))
+				.readEntity(DocumentsResult1.class);
 	}
 
 }

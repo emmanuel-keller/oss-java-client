@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 OpenSearchServer Inc.
+/*
+ * Copyright 2015-2017 OpenSearchServer Inc.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import com.opensearchserver.client.common.AbstractApi;
 import com.opensearchserver.client.common.CommonListResult;
 import com.opensearchserver.client.common.CommonResult;
 import com.opensearchserver.client.v1.search.FieldValueList1;
-import com.qwazr.utils.http.HttpRequest;
-import org.apache.http.client.utils.URIBuilder;
 
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.IOException;

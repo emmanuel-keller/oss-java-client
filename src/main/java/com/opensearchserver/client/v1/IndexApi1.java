@@ -1,5 +1,5 @@
-/**
- * Copyright 2015 OpenSearchServer Inc.
+/*
+ * Copyright 2015-2017 OpenSearchServer Inc.
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,9 @@ package com.opensearchserver.client.v1;
 import com.opensearchserver.client.JsonClient1;
 import com.opensearchserver.client.common.AbstractApi;
 import com.opensearchserver.client.common.index.TemplateEnum;
-import com.qwazr.utils.http.HttpRequest;
-import org.apache.http.client.utils.URIBuilder;
+import com.qwazr.utils.StringUtils;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import javax.ws.rs.client.Entity;
 
 public class IndexApi1 extends AbstractApi<JsonClient1> {
 
@@ -35,15 +33,17 @@ public class IndexApi1 extends AbstractApi<JsonClient1> {
 	 *
 	 * @param indexName The name of the index
 	 * @param template  The template
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
-	public void createIndex(String indexName, TemplateEnum template) throws IOException, URISyntaxException {
+	public void createIndex(String indexName, TemplateEnum template) {
 		if (indexName == null || indexName.isEmpty())
 			throw new IllegalArgumentException("The index name is missing.");
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName, "/template/", template.name());
-		final HttpRequest request = HttpRequest.Post(uriBuilder.build());
-		client.execute(request, null, null, validator_200);
+		expectTrue200(target.path("index")
+				.path(indexName)
+				.path("template")
+				.path(template.name())
+				.request()
+				.post(Entity.text(StringUtils.EMPTY))
+				.getStatus());
 	}
 
 	/**
@@ -51,30 +51,22 @@ public class IndexApi1 extends AbstractApi<JsonClient1> {
 	 *
 	 * @param indexName The name of the index.
 	 * @return true if the index exists, false if not.
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
-	public boolean indexExists(String indexName) throws URISyntaxException, IOException {
+	public boolean indexExists(String indexName) {
 		if (indexName == null || indexName.isEmpty())
 			throw new IllegalArgumentException("The index name is missing.");
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName);
-		final HttpRequest request = HttpRequest.Get(uriBuilder.build());
-		return client.execute200True404False(request, null, null, validator_200_404);
+		return expectTrue200false404(target.path("index").path(indexName).request().get().getStatus());
 	}
 
 	/**
 	 * Delete index
 	 *
 	 * @param indexName The name of the index
-	 * @throws IOException        if any IO error occurs
-	 * @throws URISyntaxException if the URI is not valid
 	 */
-	public void deleteIndex(String indexName) throws IOException, URISyntaxException {
+	public void deleteIndex(String indexName) {
 		if (indexName == null || indexName.isEmpty())
 			throw new IllegalArgumentException("The index name is missing.");
-		final URIBuilder uriBuilder = client.getBaseUrl("index/", indexName);
-		final HttpRequest request = HttpRequest.Delete(uriBuilder.build());
-		client.execute(request, null, null, validator_200);
+		expectTrue200(target.path("index").path(indexName).request().delete().getStatus());
 	}
 
 }
